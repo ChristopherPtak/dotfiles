@@ -1,0 +1,2 @@
+alias tree='tree --gitignore'
+alias vi=vim

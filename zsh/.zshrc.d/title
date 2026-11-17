@@ -1,0 +1,14 @@
+autoload -Uz add-zsh-hook
+
+set_title_prompt() {
+    print -Pn '\e]0;%~\a'
+}
+
+set_title_cmd() {
+    print -n '\e]0;'
+    print -Prn -- "%~: ${(V)1}"
+    print -n '\a'
+}
+
+add-zsh-hook precmd set_title_prompt
+add-zsh-hook preexec set_title_cmd

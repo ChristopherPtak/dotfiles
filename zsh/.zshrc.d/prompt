@@ -1,0 +1,11 @@
+setopt PROMPT_SUBST
+
+color_bold="%{$(tput bold)%}"
+color_dim="%{$(tput dim)%}"
+color_reset="%{$(tput sgr0)%}"
+
+PS1="${color_bold}%n@%m${color_reset} ${color_dim}\$([[ \$PWD == \$HOME ]] && echo '~' || basename \"\$PWD\")${color_reset}%# "
+
+unset color_bold
+unset color_dim
+unset color_reset
