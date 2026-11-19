@@ -1,16 +1,28 @@
+autoload -Uz add-zsh-hook
+
 NOTIFY_MIN_SECS=5
 
-PS0='${_nt_dummy[$((_nt_start=SECONDS,0))]}'
-
-__notify_done() {
-  local rc=$?
-  if [[ -n $_nt_start ]]; then
-    local dur=$((SECONDS - _nt_start)); _nt_start=
-    if (( dur >= NOTIFY_MIN_SECS )); then
-      local cmd
-      cmd=$(HISTTIMEFORMAT= history 1 | sed 's/^ *[0-9]* *//')
-      ( winnotify "Done (exit $rc, ${dur}s)" "$cmd" & ) 2>/dev/null
-    fi
-  fi
-  return $rc
+_nt_preexec() {
+    _nt_start=$SECONDS
 }
+
+_nt_precmd() {
+    local rc=$?
+
+    if [[ -n $_nt_start ]]; then
+        local dur=$((SECONDS - _nt_start))
+        _nt_start=
+
+        if (( dur >= NOTIFY_MIN_SECS )); then
+            local cmd
+            cmd=$(fc -ln -1 | sed 's/^[[:space:]]*//')
+
+            ( winnotify "Done (exit $rc, ${dur}s)" "$cmd" & ) 2>/dev/null
+        fi
+    fi
+
+    return $rc
+}
+
+add-zsh-hook preexec _nt_preexec
+add-zsh-hook precmd _nt_precmd
